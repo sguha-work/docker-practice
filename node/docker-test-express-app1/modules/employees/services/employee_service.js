@@ -7,13 +7,15 @@ class EmployeeService {
     findAll() {
         return new Promise(async (resolve, reject) => {
             try {
-                await this.dbService.connect('teacher');
+                await this.dbService.connect('teacherx');
                 const result = await this.dbService.find(employeeModel.default);
+                this.dbService.disConnect();
                 resolve(result);
             } catch (error) {
+                console.log('service error', error)
                 reject(error);
             } finally {
-                this.dbService.disConnect();
+
             }
         });
     }
@@ -24,11 +26,11 @@ class EmployeeService {
                 await this.dbService.connect('teacher');
                 const employee = new employeeModel.default({ name, phonenumber, address, photo, sex });
                 const result = await this.dbService.save(employee);
+                this.dbService.disConnect();
                 resolve(result);
             } catch (error) {
                 reject(error);
             } finally {
-                this.dbService.disConnect();
             }
         });
     }

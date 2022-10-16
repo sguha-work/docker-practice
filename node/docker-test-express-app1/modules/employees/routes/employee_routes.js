@@ -12,9 +12,10 @@ router.get('/', async (request, response) => {// read, fetch all employee data
         const result = await employeeController.findAll();
         responseObj.data = result;
         response.send(responseObj);
-    } catch (error) {console.error(error);
-        responseObj.status = error.code?error.code:500;
-        response.message = error.message?error.message:"Error occured in code";
+    } catch (error) {
+        console.error(error);
+        responseObj.status = error.code ? error.code : 500;
+        responseObj.message = error.message ? error.message : "Error occured in code";
         response.send(responseObj);
     }
 });
@@ -37,8 +38,8 @@ router.post('/', async (request, response) => {// create, create new employee
         responseObj.data = result;
         response.send(responseObj);
     } catch (error) {
-        responseObj.status = error.code?error.code:500;
-        response.message = error.message?error.message:"Error occured in code";
+        responseObj.status = error.code ? error.code : 500;
+        responseObj.message = error.message ? error.message : "Error occured in code";
         response.send(responseObj);
     }
 });

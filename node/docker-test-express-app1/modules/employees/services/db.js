@@ -24,6 +24,7 @@ class DBService {
             this.db.close();
         } catch (error) {
             console.log('db connection close error-->', error);
+            throw error;
         }
     }
 
