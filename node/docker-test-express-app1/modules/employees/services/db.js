@@ -1,17 +1,17 @@
 import mongoose from 'mongoose';
 class DBService {
+    static db = null;
     constructor() {
-        this.db = null;
     }
-    connectionString(dbName = 'test') {
+    static connectionString(dbName = 'test') {
         return `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL}/${dbName}`
     }
 
-    connect(DBName) {
+    static connect(DBName) {
         return new Promise(async (resolve, reject) => {
-            try {
-                await mongoose.connect(this.connectionString(DBName)); // await on a step makes process to wait until it's done/ err'd out.
-                this.db = mongoose.connection;
+            try {console.log(`connection string ${DBService.connectionString(DBName)}`);
+                await mongoose.connect(DBService.connectionString(DBName)); // await on a step makes process to wait until it's done/ err'd out.
+                DBService.db = mongoose.connection;
                 resolve(this.db);
             } catch (error) {
                 reject(error);
@@ -19,16 +19,16 @@ class DBService {
         });
     }
 
-    disConnect(obj) {
+    static disConnect(obj) {
         try {
-            this.db.close();
+            DBService.db.close();
         } catch (error) {
             console.log('db connection close error-->', error);
             throw error;
         }
     }
 
-    find(dataModel, query = {}) {
+    static find(dataModel, query = {}) {
         return new Promise(async (resolve, reject) => {
             if (
                 typeof dataModel.find === "undefined" ||
@@ -51,7 +51,7 @@ class DBService {
         });
     }
 
-    save(dataModel) {
+    static save(dataModel) {
         return new Promise(async (resolve, reject) => {
             if (typeof dataModel.save === "undefined" || typeof dataModel.save !== "function") {
                 reject({
@@ -69,7 +69,7 @@ class DBService {
         });
     }
 
-    findAndDelete(dataModel, query = {}) {
+    static findAndDelete(dataModel, query = {}) {
         return new Promise(async (resolve, reject) => {
             if (
                 typeof dataModel.delete === "undefined" ||

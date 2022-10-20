@@ -4,27 +4,13 @@ import EmployeeController from './../controllers/employee_controller.js';
 const employeeController = new EmployeeController();
 
 router.get('/', async (request, response) => {// read, fetch all employee data
-    let responseObj = {};
-    responseObj.status = 200;
-    responseObj.data = {};
-    responseObj.message = '';
-    try {
-        const result = await employeeController.findAll();
-        responseObj.data = result;
-        response.send(responseObj);
-    } catch (error) {
-        console.error(error);
-        responseObj.status = error.code ? error.code : 500;
-        responseObj.message = error.message ? error.message : "Error occured in code";
-        response.send(responseObj);
-    }
+        const result = await employeeController.findAll(request, response);
+        return result;
 });
 
-router.get('/:employee_id', (request, response) => {// read, fetch perticuler employee data
-    let responseObj = {};
-    responseObj.status = 200;
-    responseObj.data = {};
-    response.send(responseObj);
+router.get('/:employee_id', async(request, response) => {// read, fetch perticuler employee data
+    const result = await employeeController.findAll(request, response);
+    return result;
 });
 
 router.post('/', async (request, response) => {// create, create new employee

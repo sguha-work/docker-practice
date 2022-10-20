@@ -1,15 +1,13 @@
 import DBService from './db.js';
 import * as employeeModel from '../model/employee_model.js';
 class EmployeeService {
-    constructor() {
-        this.dbService = new DBService();
-    }
-    findAll() {
+    constructor() {}
+    static findAll() {
         return new Promise(async (resolve, reject) => {
             try {
-                await this.dbService.connect('teacherx');
-                const result = await this.dbService.find(employeeModel.default);
-                this.dbService.disConnect();
+                await DBService.connect('teacherx');
+                const result = await DBService.find(employeeModel.default);
+                DBService.disConnect();
                 resolve(result);
             } catch (error) {
                 console.log('service error', error)
