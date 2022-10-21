@@ -1,34 +1,46 @@
 import mongoose from 'mongoose';
 class DBService {
-    static db = null;
+
+    #db = null;
+
     constructor() {
+        console.log('db instance created')
+        this.instance = null;
     }
-    static connectionString(dbName = 'test') {
+
+    static getInstance() {
+        if (this.instance == null) {
+            this.instance = new DBService();
+        }
+        return this.instance;
+    }
+
+    #connectionString(dbName = 'test') {
         return `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL}/${dbName}`
     }
 
-    static connect(DBName) {
+    connect(DBName) {
         return new Promise(async (resolve, reject) => {
-            try {console.log(`connection string ${DBService.connectionString(DBName)}`);
-                await mongoose.connect(DBService.connectionString(DBName)); // await on a step makes process to wait until it's done/ err'd out.
-                DBService.db = mongoose.connection;
-                resolve(this.db);
+            try {
+                await mongoose.connect(this.#connectionString(DBName)); // await on a step makes process to wait until it's done/ err'd out.
+                this.#db = mongoose.connection;
+                resolve(this.#db);
             } catch (error) {
                 reject(error);
             }
         });
     }
 
-    static disConnect(obj) {
+    disConnect(obj) {
         try {
-            DBService.db.close();
+            this.#db.close();
         } catch (error) {
             console.log('db connection close error-->', error);
             throw error;
         }
     }
 
-    static find(dataModel, query = {}) {
+    find(dataModel, query = {}) {
         return new Promise(async (resolve, reject) => {
             if (
                 typeof dataModel.find === "undefined" ||
@@ -44,14 +56,14 @@ class DBService {
                 } catch (err) {
                     reject({
                         message: err.message,
-                        status: err.code === 11000 ? 409 : 500,
+                        status: (err.code && err.code === 11000) ? 409 : 500,
                     });
                 }
             }
         });
     }
 
-    static save(dataModel) {
+    save(dataModel) {
         return new Promise(async (resolve, reject) => {
             if (typeof dataModel.save === "undefined" || typeof dataModel.save !== "function") {
                 reject({
@@ -69,7 +81,7 @@ class DBService {
         });
     }
 
-    static findAndDelete(dataModel, query = {}) {
+    findAndDelete(dataModel, query = {}) {
         return new Promise(async (resolve, reject) => {
             if (
                 typeof dataModel.delete === "undefined" ||

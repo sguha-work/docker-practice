@@ -1,14 +1,14 @@
 import express from 'express';
 const router = express.Router();
 import EmployeeController from './../controllers/employee_controller.js';
-const employeeController = new EmployeeController();
+const employeeController = EmployeeController.getInstance();
 
 router.get('/', async (request, response) => {// read, fetch all employee data
-        const result = await employeeController.findAll(request, response);
-        return result;
+    const result = await employeeController.findAll(request, response);
+    return result;
 });
 
-router.get('/:employee_id', async(request, response) => {// read, fetch perticuler employee data
+router.get('/:employee_id', async (request, response) => {// read, fetch perticuler employee data
     const result = await employeeController.findAll(request, response);
     return result;
 });
